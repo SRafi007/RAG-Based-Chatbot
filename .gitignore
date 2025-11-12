@@ -1,0 +1,18 @@
+# Environment files
+.env
+rag_env/
+
+# Documentation and assignments
+docs/
+assignments_doc.pdf
+
+# Tests and application specific directories
+tests/
+app/llm/
+app/memory/
+app/orchestrator/
+app/schemas/
+app/services/
+app/models/
+app/api/
+app/main.py
