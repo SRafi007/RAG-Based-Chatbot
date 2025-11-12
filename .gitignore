@@ -7,7 +7,7 @@ docs/
 assignments_doc.pdf
 
 # Tests and application specific directories
-tests/
+#tests/
 app/llm/
 app/memory/
 app/orchestrator/

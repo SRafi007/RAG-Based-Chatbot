@@ -1,0 +1,4 @@
+2025-11-13 00:18:23 | INFO | RAG-based Chatbot.app.utils.redis_client | Connecting to Redis Cloud at redis-17369.c1.asia-northeast1-1.gce.cloud.redislabs.com:17369 (TLS=False)
+2025-11-13 00:18:24 | INFO | RAG-based Chatbot.app.memory.short_term_memory | [Memory] Created session test_session_1 for user user007
+2025-11-13 00:28:51 | ERROR | RAG-based Chatbot.app.utils.llm_client | [GeminiClient] Generation failed: Simulated failure
+2025-11-13 00:34:54 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash

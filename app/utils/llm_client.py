@@ -1,77 +1,76 @@
 # app/utils/llm_client.py
 
-import asyncio
 from google import genai
-from google.genai import types
 from app.config.settings import settings
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+
 class GeminiClient:
     """
-    Singleton wrapper around Google Gemini API.
+    Wrapper around Google Gemini API.
     Provides both standard and streaming generation.
     """
 
     def __init__(self):
-        self.client = genai.Client(api_key=settings.gemini_api_key)
-        self.model = settings.gemini_model_name
-
-    def _build_content(self, prompt: str) -> list[types.Content]:
-        return [
-            types.Content(
-                role="user",
-                parts=[types.Part.from_text(text=prompt)],
-            )
-        ]
-
-    def _build_config(self) -> types.GenerateContentConfig:
-        return types.GenerateContentConfig(
-            thinking_config=types.ThinkingConfig(
-                thinking_budget=settings.gemini_thinking_budget,
-            ),
-            image_config=types.ImageConfig(
-                image_size=settings.gemini_image_size,
-            ),
-        )
+        try:
+            self.client = genai.Client(api_key=settings.gemini_api_key)
+            self.model = settings.gemini_model_name
+            logger.info(f"GeminiClient initialized with model: {self.model}")
+        except Exception as e:
+            logger.error(f"Failed to initialize GeminiClient: {e}")
+            raise
 
     def generate(self, prompt: str) -> str:
         """
         Generate a complete response (non-streaming).
+
+        Args:
+            prompt: The user prompt/question
+
+        Returns:
+            Generated text response
         """
         try:
-            contents = self._build_content(prompt)
-            config = self._build_config()
-            result = self.client.models.generate_content(
+            response = self.client.models.generate_content(
                 model=self.model,
-                contents=contents,
-                config=config,
+                contents=prompt
             )
-            return result.text.strip() if hasattr(result, "text") else str(result)
+
+            if hasattr(response, 'text'):
+                return response.text.strip()
+            else:
+                logger.warning("Response has no text attribute")
+                return str(response)
+
         except Exception as e:
             logger.error(f"[GeminiClient] Generation failed: {e}")
-            return "Sorry, I couldn't generate a response right now."
+            return f"Error: {str(e)}"
 
     async def stream_generate(self, prompt: str):
         """
         Async generator yielding Gemini text chunks for streaming responses.
+
+        Args:
+            prompt: The user prompt/question
+
+        Yields:
+            Text chunks as they are generated
         """
-        loop = asyncio.get_event_loop()
-
-        def blocking_stream():
-            contents = self._build_content(prompt)
-            config = self._build_config()
-            for chunk in self.client.models.generate_content_stream(
+        try:
+            response = self.client.models.generate_content_stream(
                 model=self.model,
-                contents=contents,
-                config=config,
-            ):
-                yield chunk.text
+                contents=prompt
+            )
 
-        for text_chunk in await loop.run_in_executor(None, lambda: list(blocking_stream())):
-            if text_chunk:
-                yield text_chunk
+            for chunk in response:
+                if hasattr(chunk, 'text') and chunk.text:
+                    yield chunk.text
+
+        except Exception as e:
+            logger.error(f"[GeminiClient] Streaming failed: {e}")
+            yield f"Error: {str(e)}"
 
 
 # Singleton instance
