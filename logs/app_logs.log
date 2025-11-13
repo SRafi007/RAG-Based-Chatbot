@@ -614,3 +614,26 @@ TypeError: object of type 'NoneType' has no len()
 2025-11-13 09:49:20 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
 2025-11-13 09:49:20 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
 2025-11-13 09:49:22 | INFO | RAG-based Chatbot.app.main | 🚀 RAG-based Chatbot starting in development mode on port 8000
+2025-11-13 09:51:03 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 09:51:03 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
+2025-11-13 09:51:03 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
+2025-11-13 09:51:04 | INFO | RAG-based Chatbot.app.main | 🚀 RAG-based Chatbot starting in development mode on port 8000
+2025-11-13 09:51:27 | INFO | RAG-based Chatbot.app.api.chat_api | Chat request from user 001, session 001
+2025-11-13 09:51:28 | INFO | RAG-based Chatbot.app.api.chat_api | Created new session in DB: 001
+2025-11-13 09:51:28 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user 001, session 001
+2025-11-13 09:51:28 | INFO | RAG-based Chatbot.app.utils.redis_client | Connecting to Redis Cloud at redis-17369.c1.asia-northeast1-1.gce.cloud.redislabs.com:17369 (TLS=False)
+2025-11-13 09:51:28 | INFO | RAG-based Chatbot.app.memory.short_term_memory | [Memory] Created session 001 for user 001
+2025-11-13 09:51:28 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Created new session: 001
+2025-11-13 09:51:29 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: hello...
+2025-11-13 09:51:30 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as OFF-TOPIC
+2025-11-13 09:51:30 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to off-topic path
+2025-11-13 09:51:30 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated off-topic response
+2025-11-13 09:52:10 | INFO | RAG-based Chatbot.app.api.chat_api | Chat request from user 001, session 001
+2025-11-13 09:52:10 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user 001, session 001
+2025-11-13 09:52:11 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: tell me about off days...
+2025-11-13 09:52:12 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 09:52:12 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 09:52:12 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: tell me about off days...
+2025-11-13 09:52:12 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 09:52:12 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 09:52:15 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response

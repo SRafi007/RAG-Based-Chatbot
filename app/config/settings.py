@@ -35,6 +35,19 @@ class Settings(BaseSettings):
     max_session_messages: int = 200
     session_ttl_days: int = 30
 
+    # Elasticsearch (Sparse Vector)
+    elastic_url: str
+    elastic_index: str = Field(default="company_policies")
+
+    # Pinecone (Dense Vector)
+    pinecone_api_key: str
+    pinecone_env: str
+    pinecone_index: str = Field(default="company-policies")
+
+    # OpenAI (Embeddings)
+    openai_api_key: str
+    embedding_model: str = Field(default="text-embedding-3-small")
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 

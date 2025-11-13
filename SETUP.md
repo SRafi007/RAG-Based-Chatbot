@@ -236,10 +236,57 @@ Check:
 
 ## 📚 Next Steps
 
-1. **Add Vector Store**: Integrate ChromaDB or FAISS in `retriever_agent.py`
-2. **Upload Documents**: Create document ingestion pipeline
-3. **Frontend**: Build a chat UI
-4. **Deployment**: Deploy to cloud platform (AWS, GCP, Azure)
+### 1. Set Up Knowledge Base Pipeline (Hybrid RAG)
+
+The project includes a complete hybrid RAG pipeline combining Elasticsearch (BM25) and Pinecone (semantic search).
+
+**Quick Setup:**
+
+1. Configure API credentials in `.env`:
+   ```bash
+   # Elasticsearch
+   ELASTIC_URL=https://your-elastic-cloud-url.es.io:9243
+   ELASTIC_INDEX=company_policies
+
+   # Pinecone
+   PINECONE_API_KEY=your-pinecone-api-key
+   PINECONE_ENV=your-pinecone-environment
+   PINECONE_INDEX=company-policies
+
+   # OpenAI
+   OPENAI_API_KEY=your-openai-api-key
+   EMBEDDING_MODEL=text-embedding-3-small
+   ```
+
+2. Install KB pipeline dependencies:
+   ```bash
+   pip install elasticsearch pinecone-client openai PyPDF2 python-docx
+   ```
+
+3. Add documents to `data/raw/` (PDF, DOCX, TXT, MD)
+
+4. Index documents:
+   ```bash
+   python -m kb_pipeline.pipeline --mode index --data_dir data/raw
+   ```
+
+5. Enable hybrid retrieval in `app/orchestrator/agents/retriever_agent.py`:
+   ```python
+   # Change from:
+   retriever_agent = RetrieverAgent(use_hybrid=False)
+   # To:
+   retriever_agent = RetrieverAgent(use_hybrid=True)
+   ```
+
+**For detailed instructions, see [KB_INTEGRATION.md](KB_INTEGRATION.md)**
+
+### 2. Frontend
+
+Build a chat UI using React, Vue, or Streamlit
+
+### 3. Deployment
+
+Deploy to cloud platform (AWS, GCP, Azure)
 
 ## 🆘 Support
 
