@@ -637,3 +637,32 @@ TypeError: object of type 'NoneType' has no len()
 2025-11-13 09:52:12 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
 2025-11-13 09:52:12 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
 2025-11-13 09:52:15 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 21:16:46 | INFO | RAG-based Chatbot.app.utils.gemini_embeddings | Gemini embeddings initialized: text-embedding-3-small (768D)
+2025-11-13 21:16:46 | ERROR | RAG-based Chatbot.app.utils.gemini_embeddings | Error generating embedding: Model names should start with `models/` or `tunedModels/`, got: {name}
+2025-11-13 21:33:19 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_sparse | Elasticsearch connected with API key to: https://f5b17da50df04e7195e2ad4a89f7675f.us-central1.gcp.cloud.es.io:443
+2025-11-13 21:33:21 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_sparse | Created Elasticsearch index: company_policies
+2025-11-13 21:33:21 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_sparse | Indexed 1 chunks to Elasticsearch (failed: 0)
+2025-11-13 21:33:22 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_sparse | Sparse search returned 0 results for query: test policy
+2025-11-13 22:03:03 | INFO | RAG-based Chatbot.__main__ | Using FREE local embeddings: all-mpnet-base-v2 (768D)
+2025-11-13 22:03:03 | INFO | RAG-based Chatbot.__main__ | Connecting to Pinecone index: company-policies
+2025-11-13 22:03:03 | INFO | RAG-based Chatbot.__main__ | Pinecone host: https://company-policies-3uro9jq.svc.aped-4627-b74a.pinecone.io
+2025-11-13 22:03:03 | INFO | RAG-based Chatbot.__main__ | ✅ Connected to Pinecone index: company-policies
+2025-11-13 22:03:03 | INFO | RAG-based Chatbot.__main__ | Starting indexing of 1 chunks with FREE local embeddings...
+2025-11-13 22:03:03 | INFO | RAG-based Chatbot.__main__ | Generating local embeddings for batch 1...
+2025-11-13 22:03:06 | INFO | RAG-based Chatbot.__main__ | [OK] Indexed 1/1 chunks
+2025-11-13 22:03:06 | INFO | RAG-based Chatbot.__main__ | Successfully indexed 1 chunks with FREE local embeddings!
+2025-11-13 22:03:06 | INFO | RAG-based Chatbot.__main__ | Local dense search returned 1 results for: what are the company values
+2025-11-13 22:17:40 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_sparse | Elasticsearch connected with API key to: https://your-elastic-cloud-url.es.io:9243
+2025-11-13 22:17:40 | ERROR | RAG-based Chatbot.kb_pipeline.indexing.index_sparse | Failed to initialize Elasticsearch: Connection error caused by: ConnectionError(Connection error caused by: NameResolutionError(<elastic_transport._node._urllib3_chain_certs.HTTPSConnection object at 0x0000022B8DC100B0>: Failed to resolve 'your-elastic-cloud-url.es.io' ([Errno 11001] getaddrinfo failed)))
+2025-11-13 22:17:46 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | Using FREE local embeddings: all-mpnet-base-v2 (768D)
+2025-11-13 22:17:46 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | Connecting to Pinecone index: company-policies
+2025-11-13 22:17:46 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | Pinecone host: https://company-policies-3uro9jq.svc.aped-4627-b74a.pinecone.io
+2025-11-13 22:17:47 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | ✅ Connected to Pinecone index: company-policies
+2025-11-13 22:17:47 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | Starting indexing of 27 chunks with FREE local embeddings...
+2025-11-13 22:17:47 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | Generating local embeddings for batch 1...
+2025-11-13 22:17:51 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | [OK] Indexed 10/27 chunks
+2025-11-13 22:17:51 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | Generating local embeddings for batch 2...
+2025-11-13 22:17:52 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | [OK] Indexed 20/27 chunks
+2025-11-13 22:17:52 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | Generating local embeddings for batch 3...
+2025-11-13 22:17:53 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | [OK] Indexed 27/27 chunks
+2025-11-13 22:17:53 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | Successfully indexed 27 chunks with FREE local embeddings!

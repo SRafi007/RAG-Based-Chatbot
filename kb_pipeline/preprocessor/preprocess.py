@@ -1,10 +1,11 @@
 # kb_pipeline/preprocessor/preprocess.py
 
 import re
+import logging
 from typing import List, Dict
-from app.utils.logger import get_logger
 
-logger = get_logger(__name__)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class DocumentPreprocessor:
@@ -59,7 +60,7 @@ class DocumentPreprocessor:
 
         for doc in documents:
             content = doc['content']
-            source_file = doc['source']
+            source_file = doc.get('source_file', doc.get('source', 'unknown'))
 
             # Extract policy type from filename
             policy_type = self._extract_policy_type(source_file)

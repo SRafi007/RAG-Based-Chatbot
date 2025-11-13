@@ -14,7 +14,7 @@ Usage:
 import argparse
 from pathlib import Path
 from kb_pipeline.data.ingest import DocumentIngester
-from kb_pipeline.data.preprocess import DocumentPreprocessor
+from kb_pipeline.preprocessor.preprocess import DocumentPreprocessor
 from kb_pipeline.indexing.index_sparse import SparseIndexer
 from kb_pipeline.indexing.index_dense import DenseIndexer
 from kb_pipeline.retrieval.hybrid_retriever import HybridRetriever
@@ -36,9 +36,10 @@ class KnowledgeBasePipeline:
         # Data processing
         self.ingester = DocumentIngester()
         self.preprocessor = DocumentPreprocessor(
-            chunk_size=512,
-            chunk_overlap=128,
-            min_chunk_size=100
+            target_tokens=350,
+            max_tokens=450,
+            overlap_tokens=50,
+            min_tokens=50
         )
 
         # Indexing

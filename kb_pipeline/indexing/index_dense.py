@@ -1,9 +1,9 @@
 # kb_pipeline/indexing/index_dense.py
 
 from typing import List, Dict
-from pinecone import Pinecone, ServerlessSpec
-from openai import OpenAI
+from pinecone import Pinecone
 from app.config.settings import settings
+from app.utils.free_embeddings import get_free_embeddings
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -11,120 +11,148 @@ logger = get_logger(__name__)
 
 class DenseIndexer:
     """
-    Dense vector indexer using Pinecone with OpenAI embeddings.
+    Dense vector indexer using Pinecone with FREE local embeddings.
     Provides semantic search with rich metadata.
+
+    Features:
+    - Uses sentence-transformers (all-mpnet-base-v2, 768 dimensions)
+    - FREE, local embeddings (NO API LIMITS!)
+    - High quality semantic search
+    - Unlimited usage
     """
 
     def __init__(self):
-        """Initialize Pinecone and OpenAI clients."""
+        """Initialize Pinecone with free local embeddings."""
         try:
+            # Initialize FREE local embeddings (all-mpnet-base-v2)
+            self.embeddings = get_free_embeddings(model_name="all-mpnet-base-v2")
+            self.embedding_model = "all-mpnet-base-v2"
+            self.embedding_dimension = self.embeddings.dimension
+
+            logger.info(f"Using FREE local embeddings: {self.embedding_model} ({self.embedding_dimension}D)")
+
             # Initialize Pinecone
             self.pc = Pinecone(api_key=settings.pinecone_api_key)
             self.index_name = settings.pinecone_index
 
-            # Initialize OpenAI for embeddings
-            self.openai_client = OpenAI(api_key=settings.openai_api_key)
-            self.embedding_model = settings.embedding_model
-            self.embedding_dimension = 1536  # For text-embedding-3-small
+            # Connect to existing index using host
+            logger.info(f"Connecting to Pinecone index: {self.index_name}")
+            logger.info(f"Pinecone host: {settings.pinecone_host}")
 
-            # Create index if it doesn't exist
-            if self.index_name not in self.pc.list_indexes().names():
-                self._create_index()
-                logger.info(f"Created Pinecone index: {self.index_name}")
-            else:
-                logger.info(f"Using existing Pinecone index: {self.index_name}")
+            # Get index using host
+            self.index = self.pc.Index(
+                name=self.index_name,
+                host=settings.pinecone_host
+            )
 
-            # Get index
-            self.index = self.pc.Index(self.index_name)
+            logger.info(f"✅ Connected to Pinecone index: {self.index_name}")
 
         except Exception as e:
-            logger.error(f"Failed to initialize Pinecone: {e}")
+            logger.error(f"Failed to initialize DenseIndexer: {e}")
             raise
 
-    def _create_index(self):
-        """Create Pinecone index."""
-        self.pc.create_index(
-            name=self.index_name,
-            dimension=self.embedding_dimension,
-            metric='cosine',
-            spec=ServerlessSpec(
-                cloud='aws',
-                region=settings.pinecone_env
-            )
-        )
-
-    def _get_embedding(self, text: str) -> List[float]:
+    def _get_embedding(self, text: str, is_query: bool = False) -> List[float]:
         """
-        Get dense embedding for text using OpenAI.
+        Get embedding using Gemini (FREE!).
 
         Args:
             text: Input text
+            is_query: True if text is a search query, False if document
 
         Returns:
-            Dense embedding vector
+            Embedding vector (768 dimensions)
         """
         try:
-            response = self.openai_client.embeddings.create(
-                model=self.embedding_model,
-                input=text
-            )
-            return response.data[0].embedding
+            if is_query:
+                return self.embeddings.get_query_embedding(text)
+            else:
+                return self.embeddings.get_document_embedding(text)
         except Exception as e:
             logger.error(f"Error getting embedding: {e}")
             return []
 
-    def index_documents(self, chunks: List[Dict], batch_size: int = 100) -> int:
+    def _get_embeddings_batch(self, texts: List[str], batch_size: int = 32) -> List[List[float]]:
         """
-        Index semantic chunks into Pinecone.
+        Get embeddings for multiple texts (more efficient).
 
         Args:
-            chunks: List of semantic chunk dictionaries with 'id', 'text', and 'metadata'
-            batch_size: Number of chunks to process in each batch
+            texts: List of texts
+            batch_size: Batch size for processing
+
+        Returns:
+            List of embedding vectors
+        """
+        try:
+            return self.embeddings.get_embeddings_batch(texts, batch_size=batch_size)
+        except Exception as e:
+            logger.error(f"Error getting batch embeddings: {e}")
+            return []
+
+    def index_documents(self, chunks: List[Dict], batch_size: int = 50) -> int:
+        """
+        Index semantic chunks into Pinecone using FREE local embeddings.
+
+        Args:
+            chunks: List of semantic chunk dictionaries
+            batch_size: Number of chunks per batch
 
         Returns:
             Number of successfully indexed chunks
         """
         try:
-            vectors = []
             indexed_count = 0
+            total_chunks = len(chunks)
 
-            for i, chunk in enumerate(chunks):
-                # Get embedding from text
-                embedding = self._get_embedding(chunk["text"])
+            logger.info(f"Starting indexing of {total_chunks} chunks with FREE local embeddings...")
 
-                if not embedding:
-                    logger.warning(f"Skipping chunk {chunk['id']} - no embedding")
+            # Process in batches
+            for i in range(0, total_chunks, batch_size):
+                batch_chunks = chunks[i:i + batch_size]
+                batch_num = i // batch_size + 1
+
+                # Extract texts for batch embedding
+                texts = [chunk["text"] for chunk in batch_chunks]
+
+                # Get embeddings in batch (FREE and UNLIMITED!)
+                logger.info(f"Generating local embeddings for batch {batch_num}...")
+                embeddings = self._get_embeddings_batch(texts, batch_size=32)
+
+                if not embeddings or len(embeddings) != len(texts):
+                    logger.warning(f"Batch {batch_num} embedding mismatch, processing individually")
+                    # Fallback to individual processing
+                    embeddings = []
+                    for text in texts:
+                        emb = self._get_embedding(text, is_query=False)
+                        if emb:
+                            embeddings.append(emb)
+
+                if not embeddings:
+                    logger.warning(f"Failed to generate embeddings for batch {batch_num}")
                     continue
 
-                # Prepare vector with metadata
-                # Pinecone metadata size limit: keep text truncated in metadata
-                vector = {
-                    "id": chunk["id"],
-                    "values": embedding,
-                    "metadata": {
-                        "text": chunk["text"][:1000],  # Truncate for Pinecone limit
-                        "section": chunk["metadata"]["section"],
-                        "policy_type": chunk["metadata"]["policy_type"],
-                        "source_file": chunk["metadata"]["source_file"],
-                        "chunk_index": chunk["metadata"]["chunk_index"],
-                        "tokens": chunk["metadata"]["tokens"]
+                # Prepare vectors for Pinecone
+                vectors = []
+                for chunk, embedding in zip(batch_chunks, embeddings):
+                    vector = {
+                        "id": chunk["id"],
+                        "values": embedding,
+                        "metadata": {
+                            "text": chunk["text"][:1000],  # Truncate for Pinecone limit
+                            "section": chunk["metadata"]["section"],
+                            "policy_type": chunk["metadata"]["policy_type"],
+                            "source_file": chunk["metadata"]["source_file"],
+                            "chunk_index": chunk["metadata"]["chunk_index"],
+                            "tokens": chunk["metadata"]["tokens"]
+                        }
                     }
-                }
-                vectors.append(vector)
+                    vectors.append(vector)
 
-                # Batch upsert
-                if len(vectors) >= batch_size:
-                    self.index.upsert(vectors=vectors)
-                    indexed_count += len(vectors)
-                    logger.info(f"Indexed batch: {indexed_count} chunks so far")
-                    vectors = []
-
-            # Upsert remaining vectors
-            if vectors:
+                # Upsert to Pinecone
                 self.index.upsert(vectors=vectors)
                 indexed_count += len(vectors)
+                logger.info(f"[OK] Indexed {indexed_count}/{total_chunks} chunks")
 
-            logger.info(f"Successfully indexed {indexed_count} chunks to Pinecone")
+            logger.info(f"Successfully indexed {indexed_count} chunks with FREE local embeddings!")
             return indexed_count
 
         except Exception as e:
@@ -133,18 +161,18 @@ class DenseIndexer:
 
     def search(self, query: str, top_k: int = 5) -> List[Dict]:
         """
-        Search for documents using semantic similarity.
+        Search for documents using FREE local embeddings.
 
         Args:
             query: Search query
             top_k: Number of results to return
 
         Returns:
-            List of search results with content, score, and metadata
+            List of search results
         """
         try:
-            # Get query embedding
-            query_embedding = self._get_embedding(query)
+            # Get query embedding using local model (FREE!)
+            query_embedding = self._get_embedding(query, is_query=True)
 
             if not query_embedding:
                 logger.error("Failed to get query embedding")
@@ -168,7 +196,7 @@ class DenseIndexer:
                     "chunk_id": match['id']
                 })
 
-            logger.info(f"Dense search returned {len(results)} results for query: {query[:50]}")
+            logger.info(f"Local dense search returned {len(results)} results for: {query[:50]}")
             return results
 
         except Exception as e:
@@ -185,7 +213,11 @@ class DenseIndexer:
 
 
 if __name__ == "__main__":
-    # Test dense indexer
+    # Test dense indexer with FREE local embeddings
+    print("\n" + "="*70)
+    print("Testing Dense Indexer with FREE Local Embeddings")
+    print("="*70 + "\n")
+
     test_chunks = [
         {
             "id": "softvence_policy_001",
@@ -200,11 +232,25 @@ if __name__ == "__main__":
         }
     ]
 
-    indexer = DenseIndexer()
-    indexed = indexer.index_documents(test_chunks)
-    print(f"Indexed {indexed} chunks")
+    try:
+        indexer = DenseIndexer()
+        print(f"Model: {indexer.embedding_model}")
+        print(f"Dimensions: {indexer.embedding_dimension}")
+        print(f"\nIndexing {len(test_chunks)} test chunks...")
 
-    results = indexer.search("what are the company values", top_k=3)
-    print(f"\nFound {len(results)} results")
-    for r in results:
-        print(f"- {r['section']} (score: {r['score']:.2f})")
+        indexed = indexer.index_documents(test_chunks)
+        print(f"[OK] Indexed {indexed} chunks\n")
+
+        print("Searching...")
+        results = indexer.search("what are the company values", top_k=3)
+        print(f"[OK] Found {len(results)} results\n")
+
+        for i, r in enumerate(results, 1):
+            print(f"{i}. {r['section']} (score: {r['score']:.3f})")
+
+        print("\n" + "="*70)
+        print("All tests passed!")
+        print("="*70)
+
+    except Exception as e:
+        print(f"[FAIL] Test failed: {e}")

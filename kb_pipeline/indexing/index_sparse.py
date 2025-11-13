@@ -15,12 +15,24 @@ class SparseIndexer:
     """
 
     def __init__(self):
-        """Initialize Elasticsearch client."""
+        """Initialize Elasticsearch client with API key authentication."""
         try:
-            self.client = Elasticsearch(
-                [settings.elastic_url],
-                verify_certs=True
-            )
+            # Initialize with API key authentication
+            if settings.elastic_api_key:
+                self.client = Elasticsearch(
+                    [settings.elastic_url],
+                    api_key=settings.elastic_api_key,
+                    verify_certs=True
+                )
+                logger.info(f"Elasticsearch connected with API key to: {settings.elastic_url}")
+            else:
+                # Fallback to no auth (local development)
+                self.client = Elasticsearch(
+                    [settings.elastic_url],
+                    verify_certs=True
+                )
+                logger.info(f"Elasticsearch connected (no auth) to: {settings.elastic_url}")
+
             self.index_name = settings.elastic_index
 
             # Create index if it doesn't exist

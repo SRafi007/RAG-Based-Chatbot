@@ -36,17 +36,18 @@ class Settings(BaseSettings):
     session_ttl_days: int = 30
 
     # Elasticsearch (Sparse Vector)
-    elastic_url: str
+    elastic_url: str = Field(default="https://localhost:9200")
+    elastic_api_key: str = Field(default="")
     elastic_index: str = Field(default="company_policies")
 
     # Pinecone (Dense Vector)
     pinecone_api_key: str
-    pinecone_env: str
+    pinecone_host: str
     pinecone_index: str = Field(default="company-policies")
 
-    # OpenAI (Embeddings)
-    openai_api_key: str
-    embedding_model: str = Field(default="text-embedding-3-small")
+    # Local Embeddings (sentence-transformers - FREE & UNLIMITED!)
+    embedding_model: str = Field(default="all-mpnet-base-v2")
+    embedding_dimension: int = Field(default=768)
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
