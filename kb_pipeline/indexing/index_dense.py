@@ -1,7 +1,6 @@
 # kb_pipeline/indexing/index_dense.py
 
 from typing import List, Dict
-import pinecone
 from pinecone import Pinecone, ServerlessSpec
 from openai import OpenAI
 from app.config.settings import settings
@@ -13,7 +12,7 @@ logger = get_logger(__name__)
 class DenseIndexer:
     """
     Dense vector indexer using Pinecone with OpenAI embeddings.
-    Provides semantic search capabilities.
+    Provides semantic search with rich metadata.
     """
 
     def __init__(self):
@@ -74,12 +73,12 @@ class DenseIndexer:
             logger.error(f"Error getting embedding: {e}")
             return []
 
-    def index_documents(self, chunks: List[Dict[str, str]], batch_size: int = 100) -> int:
+    def index_documents(self, chunks: List[Dict], batch_size: int = 100) -> int:
         """
-        Index document chunks into Pinecone.
+        Index semantic chunks into Pinecone.
 
         Args:
-            chunks: List of preprocessed chunk dictionaries
+            chunks: List of semantic chunk dictionaries with 'id', 'text', and 'metadata'
             batch_size: Number of chunks to process in each batch
 
         Returns:
@@ -90,50 +89,58 @@ class DenseIndexer:
             indexed_count = 0
 
             for i, chunk in enumerate(chunks):
-                # Get embedding
-                embedding = self._get_embedding(chunk["content"])
+                # Get embedding from text
+                embedding = self._get_embedding(chunk["text"])
 
                 if not embedding:
-                    logger.warning(f"Skipping chunk {chunk['chunk_id']} - no embedding")
+                    logger.warning(f"Skipping chunk {chunk['id']} - no embedding")
                     continue
 
-                # Prepare vector for upsert
+                # Prepare vector with metadata
+                # Pinecone metadata size limit: keep text truncated in metadata
                 vector = {
-                    "id": chunk["chunk_id"],
+                    "id": chunk["id"],
                     "values": embedding,
                     "metadata": {
-                        "content": chunk["content"][:1000],  # Pinecone metadata limit
-                        "source": chunk["source"],
-                        "chunk_index": chunk["chunk_index"],
-                        "file_type": chunk.get("file_type", "unknown")
+                        "text": chunk["text"][:1000],  # Truncate for Pinecone limit
+                        "section": chunk["metadata"]["section"],
+                        "policy_type": chunk["metadata"]["policy_type"],
+                        "source_file": chunk["metadata"]["source_file"],
+                        "chunk_index": chunk["metadata"]["chunk_index"],
+                        "tokens": chunk["metadata"]["tokens"]
                     }
                 }
                 vectors.append(vector)
 
-                # Upsert in batches
-                if len(vectors) >= batch_size or i == len(chunks) - 1:
+                # Batch upsert
+                if len(vectors) >= batch_size:
                     self.index.upsert(vectors=vectors)
                     indexed_count += len(vectors)
-                    logger.info(f"Indexed {indexed_count}/{len(chunks)} chunks to Pinecone")
+                    logger.info(f"Indexed batch: {indexed_count} chunks so far")
                     vectors = []
+
+            # Upsert remaining vectors
+            if vectors:
+                self.index.upsert(vectors=vectors)
+                indexed_count += len(vectors)
 
             logger.info(f"Successfully indexed {indexed_count} chunks to Pinecone")
             return indexed_count
 
         except Exception as e:
-            logger.error(f"Error indexing documents: {e}")
+            logger.error(f"Pinecone indexing failed: {e}")
             return 0
 
     def search(self, query: str, top_k: int = 5) -> List[Dict]:
         """
-        Search for documents using dense vector similarity.
+        Search for documents using semantic similarity.
 
         Args:
             query: Search query
             top_k: Number of results to return
 
         Returns:
-            List of search results with scores
+            List of search results with content, score, and metadata
         """
         try:
             # Get query embedding
@@ -153,53 +160,51 @@ class DenseIndexer:
             results = []
             for match in response['matches']:
                 results.append({
-                    "content": match['metadata']['content'],
-                    "source": match['metadata']['source'],
-                    "chunk_id": match['id'],
+                    "content": match['metadata']['text'],
                     "score": match['score'],
-                    "retrieval_method": "dense"
+                    "source": match['metadata']['source_file'],
+                    "section": match['metadata']['section'],
+                    "policy_type": match['metadata']['policy_type'],
+                    "chunk_id": match['id']
                 })
 
-            logger.info(f"Dense search returned {len(results)} results")
+            logger.info(f"Dense search returned {len(results)} results for query: {query[:50]}")
             return results
 
         except Exception as e:
-            logger.error(f"Error searching Pinecone: {e}")
+            logger.error(f"Pinecone search failed: {e}")
             return []
 
     def delete_index(self):
         """Delete the Pinecone index."""
         try:
             self.pc.delete_index(self.index_name)
-            logger.info(f"Deleted index: {self.index_name}")
+            logger.info(f"Deleted Pinecone index: {self.index_name}")
         except Exception as e:
-            logger.error(f"Error deleting index: {e}")
+            logger.error(f"Failed to delete index: {e}")
 
 
 if __name__ == "__main__":
     # Test dense indexer
-    indexer = DenseIndexer()
-
-    # Test data
     test_chunks = [
         {
-            "content": "Employees can work remotely up to 3 days per week with manager approval. "
-                       "Full-time remote work requires VP approval.",
-            "source": "hr_policy.pdf",
-            "chunk_id": "hr_policy_chunk_0",
-            "chunk_index": 0,
-            "total_chunks": 1,
-            "file_type": "pdf"
+            "id": "softvence_policy_001",
+            "text": "## 1. Company Overview & Core Values\n\nSoftvence Agency is a digital solutions company specializing in web design, AI integration, and software development.",
+            "metadata": {
+                "section": "Company Overview & Core Values",
+                "policy_type": "Company Policy",
+                "source_file": "sample_policy_handbook.md",
+                "chunk_index": 1,
+                "tokens": 120
+            }
         }
     ]
 
-    # Index
+    indexer = DenseIndexer()
     indexed = indexer.index_documents(test_chunks)
     print(f"Indexed {indexed} chunks")
 
-    # Search
-    results = indexer.search("Can I work from home?", top_k=3)
-    for i, result in enumerate(results, 1):
-        print(f"\n{i}. Score: {result['score']:.4f}")
-        print(f"   Source: {result['source']}")
-        print(f"   Content: {result['content'][:100]}...")
+    results = indexer.search("what are the company values", top_k=3)
+    print(f"\nFound {len(results)} results")
+    for r in results:
+        print(f"- {r['section']} (score: {r['score']:.2f})")
