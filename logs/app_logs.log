@@ -2,3 +2,615 @@
 2025-11-13 00:18:24 | INFO | RAG-based Chatbot.app.memory.short_term_memory | [Memory] Created session test_session_1 for user user007
 2025-11-13 00:28:51 | ERROR | RAG-based Chatbot.app.utils.llm_client | [GeminiClient] Generation failed: Simulated failure
 2025-11-13 00:34:54 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 08:07:22 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 08:07:22 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
+2025-11-13 08:07:22 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
+2025-11-13 08:07:22 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_1
+2025-11-13 08:07:22 | INFO | RAG-based Chatbot.app.utils.redis_client | Connecting to Redis Cloud at redis-17369.c1.asia-northeast1-1.gce.cloud.redislabs.com:17369 (TLS=False)
+2025-11-13 08:07:23 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'Hello, Redis Cloud!', 'ts': '2025-11-12T18:18:24.563714+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'Hello, Redis Cloud!', 'ts': '2025-11-12T18:18:24.563714+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:07:23 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_2
+2025-11-13 08:07:24 | INFO | RAG-based Chatbot.app.memory.short_term_memory | [Memory] Created session test_session_2 for user test_user
+2025-11-13 08:07:24 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Created new session: test_session_2
+2025-11-13 08:07:24 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'Tell me a joke about programming', 'ts': '2025-11-13T02:07:24.181384+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'Tell me a joke about programming', 'ts': '2025-11-13T02:07:24.181384+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:07:24 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Streaming process for user test_user, session test_session_3
+2025-11-13 08:07:24 | INFO | RAG-based Chatbot.app.memory.short_term_memory | [Memory] Created session test_session_3 for user test_user
+2025-11-13 08:07:25 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: How many vacation days do I get?...
+2025-11-13 08:07:26 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:07:26 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: How many vacation days do I get?...
+2025-11-13 08:07:26 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:07:26 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:07:28 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:07:28 | INFO | RAG-based Chatbot.app.memory.short_term_memory | [Memory] Created session test_session_4 for user test_user
+2025-11-13 08:07:28 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Created new session: test_session_4
+2025-11-13 08:07:29 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:07:29 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:07:29 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:07:29 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:07:29 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:19:00 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 08:19:00 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
+2025-11-13 08:19:00 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
+2025-11-13 08:19:44 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 08:19:44 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
+2025-11-13 08:19:44 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
+2025-11-13 08:19:44 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_1
+2025-11-13 08:19:44 | INFO | RAG-based Chatbot.app.utils.redis_client | Connecting to Redis Cloud at redis-17369.c1.asia-northeast1-1.gce.cloud.redislabs.com:17369 (TLS=False)
+2025-11-13 08:19:45 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'Hello, Redis Cloud!', 'ts': '2025-11-12T18:18:24.563714+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'Hello, Redis Cloud!', 'ts': '2025-11-12T18:18:24.563714+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:19:45 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_2
+2025-11-13 08:19:46 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'Tell me a joke about programming', 'ts': '2025-11-13T02:07:24.181384+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'Tell me a joke about programming', 'ts': '2025-11-13T02:07:24.181384+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:19:46 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Streaming process for user test_user, session test_session_3
+2025-11-13 08:19:46 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: How many vacation days do I get?...
+2025-11-13 08:19:48 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:19:48 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: How many vacation days do I get?...
+2025-11-13 08:19:48 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:19:48 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:19:50 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:19:51 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:19:51 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:19:51 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:19:51 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:19:51 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 349, in _convert_to_message
+    msg_content = msg_kwargs.pop("content") or ""
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'content'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 134, in process
+    final_state = self.graph.invoke(initial_state)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 3050, in invoke
+    for chunk in self.stream(
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\main.py", line 2643, in stream
+    loop.after_tick()
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_loop.py", line 542, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\pregel\_algo.py", line 294, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\channels\binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langgraph\graph\message.py", line 197, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 384, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai\softvence assignment\RAG-based Chatbot\rag_env\Lib\site-packages\langchain_core\messages\utils.py", line 355, in _convert_to_message
+    raise ValueError(msg) from e
+ValueError: Message dict must contain 'role' and 'content' keys, got {'role': 'user', 'text': 'What is the sick leave policy?', 'ts': '2025-11-13T02:07:28.714197+00:00'}
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langchain/errors/MESSAGE_COERCION_FAILURE 
+2025-11-13 08:21:34 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 08:21:34 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
+2025-11-13 08:21:34 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
+2025-11-13 08:21:34 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_1
+2025-11-13 08:21:34 | INFO | RAG-based Chatbot.app.utils.redis_client | Connecting to Redis Cloud at redis-17369.c1.asia-northeast1-1.gce.cloud.redislabs.com:17369 (TLS=False)
+2025-11-13 08:21:35 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What is the remote work policy?...
+2025-11-13 08:21:36 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:21:36 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:21:36 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What is the remote work policy?...
+2025-11-13 08:21:36 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:21:36 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:21:36 | ERROR | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent policy response error: 'AIMessage' object has no attribute 'get'
+2025-11-13 08:21:36 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:21:36 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_2
+2025-11-13 08:21:37 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: Tell me a joke about programming...
+2025-11-13 08:21:41 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as OFF-TOPIC
+2025-11-13 08:21:41 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to off-topic path
+2025-11-13 08:21:41 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated off-topic response
+2025-11-13 08:21:41 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: object of type 'NoneType' has no len()
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 153, in process
+    "retrieved_docs": len(final_state.get("retrieved_docs", [])),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: object of type 'NoneType' has no len()
+2025-11-13 08:21:41 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Streaming process for user test_user, session test_session_3
+2025-11-13 08:21:41 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: How many vacation days do I get?...
+2025-11-13 08:21:42 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:21:42 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: How many vacation days do I get?...
+2025-11-13 08:21:42 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:21:42 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:21:45 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:21:45 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What is the sick leave policy?...
+2025-11-13 08:21:46 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:21:46 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:21:46 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What is the sick leave policy?...
+2025-11-13 08:21:46 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:21:46 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:21:46 | ERROR | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent policy response error: 'HumanMessage' object has no attribute 'get'
+2025-11-13 08:21:46 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:21:47 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:21:47 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: How do I apply for it?...
+2025-11-13 08:21:50 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as OFF-TOPIC
+2025-11-13 08:21:50 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to off-topic path
+2025-11-13 08:21:50 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated off-topic response
+2025-11-13 08:21:50 | ERROR | RAG-based Chatbot.app.orchestrator.orchestrator | Orchestrator error: object of type 'NoneType' has no len()
+Traceback (most recent call last):
+  File "D:\ai\softvence assignment\RAG-based Chatbot\app\orchestrator\orchestrator.py", line 153, in process
+    "retrieved_docs": len(final_state.get("retrieved_docs", [])),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: object of type 'NoneType' has no len()
+2025-11-13 08:21:50 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:21:50 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What documentation is required?...
+2025-11-13 08:21:52 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:21:52 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:21:52 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What documentation is required?...
+2025-11-13 08:21:52 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:21:52 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:21:52 | ERROR | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent policy response error: 'AIMessage' object has no attribute 'get'
+2025-11-13 08:21:52 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:23:06 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 08:23:06 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
+2025-11-13 08:23:06 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
+2025-11-13 08:23:06 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_1
+2025-11-13 08:23:06 | INFO | RAG-based Chatbot.app.utils.redis_client | Connecting to Redis Cloud at redis-17369.c1.asia-northeast1-1.gce.cloud.redislabs.com:17369 (TLS=False)
+2025-11-13 08:23:07 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What is the remote work policy?...
+2025-11-13 08:23:10 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:23:10 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:23:10 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What is the remote work policy?...
+2025-11-13 08:23:10 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:23:10 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:23:13 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:23:13 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_2
+2025-11-13 08:23:14 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: Tell me a joke about programming...
+2025-11-13 08:23:15 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as OFF-TOPIC
+2025-11-13 08:23:15 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to off-topic path
+2025-11-13 08:23:15 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated off-topic response
+2025-11-13 08:24:00 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 08:24:00 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
+2025-11-13 08:24:00 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
+2025-11-13 08:24:00 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_1
+2025-11-13 08:24:00 | INFO | RAG-based Chatbot.app.utils.redis_client | Connecting to Redis Cloud at redis-17369.c1.asia-northeast1-1.gce.cloud.redislabs.com:17369 (TLS=False)
+2025-11-13 08:24:01 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What is the remote work policy?...
+2025-11-13 08:24:03 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:24:03 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:24:03 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What is the remote work policy?...
+2025-11-13 08:24:03 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:24:03 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:24:04 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:24:04 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_2
+2025-11-13 08:24:05 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: Tell me a joke about programming...
+2025-11-13 08:24:06 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as OFF-TOPIC
+2025-11-13 08:24:06 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to off-topic path
+2025-11-13 08:24:06 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated off-topic response
+2025-11-13 08:24:06 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Streaming process for user test_user, session test_session_3
+2025-11-13 08:24:07 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: How many vacation days do I get?...
+2025-11-13 08:24:08 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:24:08 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: How many vacation days do I get?...
+2025-11-13 08:24:08 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:24:08 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:24:10 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:24:11 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What is the sick leave policy?...
+2025-11-13 08:24:12 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:24:12 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:24:12 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What is the sick leave policy?...
+2025-11-13 08:24:12 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:24:12 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:24:14 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:24:14 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:24:14 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: How do I apply for it?...
+2025-11-13 08:24:18 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:24:18 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:24:18 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: How do I apply for it?...
+2025-11-13 08:24:18 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:24:18 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:24:21 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:24:21 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:24:21 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What documentation is required?...
+2025-11-13 08:24:22 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:24:22 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:24:22 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What documentation is required?...
+2025-11-13 08:24:22 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:24:22 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:24:24 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:24:50 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 08:24:50 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
+2025-11-13 08:24:50 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
+2025-11-13 08:24:50 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_1
+2025-11-13 08:24:50 | INFO | RAG-based Chatbot.app.utils.redis_client | Connecting to Redis Cloud at redis-17369.c1.asia-northeast1-1.gce.cloud.redislabs.com:17369 (TLS=False)
+2025-11-13 08:24:51 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What is the remote work policy?...
+2025-11-13 08:24:53 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:24:53 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:24:53 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What is the remote work policy?...
+2025-11-13 08:24:53 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:24:53 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:24:54 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:24:55 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_2
+2025-11-13 08:24:55 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: Tell me a joke about programming...
+2025-11-13 08:24:56 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as OFF-TOPIC
+2025-11-13 08:24:56 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to off-topic path
+2025-11-13 08:24:56 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated off-topic response
+2025-11-13 08:24:56 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Streaming process for user test_user, session test_session_3
+2025-11-13 08:24:57 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: How many vacation days do I get?...
+2025-11-13 08:24:58 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:24:58 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: How many vacation days do I get?...
+2025-11-13 08:24:58 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:24:58 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:25:00 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:25:00 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What is the sick leave policy?...
+2025-11-13 08:25:02 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:25:02 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:25:02 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What is the sick leave policy?...
+2025-11-13 08:25:02 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:25:02 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:25:03 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:25:03 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:25:04 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: How do I apply for it?...
+2025-11-13 08:25:05 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:25:05 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:25:05 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: How do I apply for it?...
+2025-11-13 08:25:05 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:25:05 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:25:08 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 08:25:08 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Processing message for user test_user, session test_session_4
+2025-11-13 08:25:09 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: What documentation is required?...
+2025-11-13 08:25:10 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-13 08:25:10 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Router: Routing to policy-related path
+2025-11-13 08:25:10 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: What documentation is required?...
+2025-11-13 08:25:10 | WARNING | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | No vector store configured, returning placeholder
+2025-11-13 08:25:10 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-13 08:25:12 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-13 09:49:20 | INFO | RAG-based Chatbot.app.utils.llm_client | GeminiClient initialized with model: gemini-2.5-flash
+2025-11-13 09:49:20 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent initialized
+2025-11-13 09:49:20 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | RAGOrchestrator initialized with LangGraph
+2025-11-13 09:49:22 | INFO | RAG-based Chatbot.app.main | 🚀 RAG-based Chatbot starting in development mode on port 8000
