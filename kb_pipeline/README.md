@@ -1,59 +1,43 @@
 # Knowledge Base Pipeline
 
-Hybrid RAG pipeline combining sparse (BM25) and dense (semantic) retrieval for company policy documents.
+Hybrid RAG system combining sparse (BM25) and dense (semantic) retrieval for company policy documents.
 
-## Architecture
+## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    KB PIPELINE FLOW                         │
-└─────────────────────────────────────────────────────────────┘
-
-1. INGESTION
-   ├── PDF, DOCX, TXT, MD files
-   └── Extract text content
-
-2. PREPROCESSING
-   ├── Clean text
-   ├── Chunk documents (512 chars, 128 overlap)
-   └── Add metadata
-
-3. INDEXING
-   ├── Sparse (Elasticsearch + BM25)
-   │   └── Keyword-based search
-   └── Dense (Pinecone + OpenAI Embeddings)
-       └── Semantic search
-
-4. RETRIEVAL
-   ├── Hybrid Retriever
-   │   ├── Sparse results (BM25)
-   │   ├── Dense results (Embeddings)
-   │   └── Weighted fusion
-   └── Reranker (LLM-based)
-
-5. RESPONSE
-   └── Top-K most relevant chunks
+Data Ingestion → Semantic Chunking → Dual Indexing → Hybrid Retrieval → LLM Response
+     |                  |                   |                 |
+  MD files      350 tokens/chunk    Elasticsearch      Weighted Fusion
+                50-token overlap       Pinecone         + Reranking
 ```
+
+## Features
+
+- **Semantic Chunking**: Heading-based splitting with token fallback
+- **Hybrid Search**: BM25 (keyword) + all-mpnet-base-v2 (semantic)
+- **Free Embeddings**: Local sentence-transformers (768D, no API limits)
+- **Memory System**: Redis (STM) + PostgreSQL (LTM)
+- **LLM**: Gemini 2.5 Flash with tool use
 
 ## Directory Structure
 
 ```
 kb_pipeline/
 ├── data/
-│   ├── ingest.py           # Document ingestion
-│   └── preprocess.py       # Text cleaning & chunking
+│   ├── ingest.py              # Load MD/PDF/DOCX files
+│   └── raw/                   # Place documents here
+├── preprocessor/
+│   └── preprocess.py          # Semantic chunking
 ├── indexing/
-│   ├── index_sparse.py     # Elasticsearch (BM25)
-│   └── index_dense.py      # Pinecone (Embeddings)
+│   ├── index_sparse.py        # Elasticsearch (BM25)
+│   └── index_dense.py         # Pinecone (embeddings)
 ├── retrieval/
-│   ├── hybrid_retriever.py # Combine sparse + dense
-│   ├── reranker.py         # LLM reranking
-│   └── __init__.py
-├── pipeline.py             # Main orchestrator
-└── README.md               # This file
+│   ├── hybrid_retriever.py    # Combine sparse + dense
+│   └── reranker.py            # LLM-based reranking
+└── pipeline.py                # Main orchestrator
 ```
 
-## Setup
+## Quick Start
 
 ### 1. Install Dependencies
 
@@ -61,73 +45,121 @@ kb_pipeline/
 pip install -r requirements.txt
 ```
 
-### 2. Configure Environment Variables
+### 2. Configure Environment
 
-Update `.env` with your credentials:
+Update `.env`:
 
 ```bash
-# Elasticsearch (Sparse Vector)
-ELASTIC_URL=https://your-elastic-cloud-url.es.io:9243
+# Elasticsearch
+ELASTIC_URL=https://your-cluster.es.io:443
+ELASTIC_API_KEY=your-api-key
 ELASTIC_INDEX=company_policies
 
-# Pinecone (Dense Vector)
-PINECONE_API_KEY=your-pinecone-api-key
-PINECONE_ENV=your-pinecone-environment
+# Pinecone
+PINECONE_API_KEY=your-api-key
+PINECONE_HOST=https://your-index.pinecone.io
 PINECONE_INDEX=company-policies
 
-# OpenAI (Embeddings)
-OPENAI_API_KEY=your-openai-api-key
-EMBEDDING_MODEL=text-embedding-3-small
+# Local Embeddings (FREE)
+EMBEDDING_MODEL=all-mpnet-base-v2
+EMBEDDING_DIMENSION=768
+
+# Gemini LLM
+GEMINI_API_KEY=your-api-key
+GEMINI_MODEL_NAME=gemini-2.5-flash
+
+# Redis
+REDIS_HOST=your-redis-host
+REDIS_PORT=17369
+REDIS_PASSWORD=your-password
+
+# PostgreSQL
+DATABASE_URL=postgresql://user:pass@host:port/db
 ```
 
-### 3. Prepare Documents
+### 3. Index Documents
 
-Place your company policy documents in `data/raw/`:
+Place documents in `kb_pipeline/data/raw/` and run:
 
 ```bash
-mkdir -p data/raw
-# Copy your PDF, DOCX, TXT, MD files here
+python test_index_documents.py
 ```
 
-## Usage
-
-### Build Index
-
-Index all documents in the knowledge base:
+Or use the pipeline:
 
 ```bash
-python -m kb_pipeline.pipeline --mode index --data_dir data/raw
+python -m kb_pipeline.pipeline --mode index --data_dir kb_pipeline/data/raw
 ```
 
-This will:
-1. Ingest all documents from `data/raw/`
-2. Preprocess and chunk them
-3. Index into Elasticsearch (sparse)
-4. Index into Pinecone (dense)
-
-### Search
-
-Query the knowledge base:
+### 4. Search
 
 ```bash
 python -m kb_pipeline.pipeline --mode search --query "What is the remote work policy?" --top_k 5
 ```
 
 Options:
-- `--query`: Your search query (required)
+- `--query`: Search query (required)
 - `--top_k`: Number of results (default: 5)
 - `--no_rerank`: Disable LLM reranking
 
-### Programmatic Usage
+### 5. Start API Server
+
+```bash
+python -m app.main
+```
+
+Access the API at `http://localhost:8000/docs`
+
+## Components
+
+### Semantic Chunking
+
+**DocumentPreprocessor** splits documents intelligently:
+- Primary: Markdown heading boundaries (##, ###)
+- Fallback: Token-based splitting (~350 tokens)
+- Overlap: 50 tokens for continuity
+- Metadata: section name, policy type, source file, token count
+
+### Sparse Indexing (Elasticsearch)
+
+**SparseIndexer** provides keyword search:
+- Algorithm: BM25
+- Best for: Exact terms, acronyms, names
+- Index: `company_policies`
+
+### Dense Indexing (Pinecone)
+
+**DenseIndexer** provides semantic search:
+- Model: all-mpnet-base-v2 (768D)
+- Free: No API limits, runs locally
+- Best for: Meaning, context, paraphrases
+- Metric: Cosine similarity
+
+### Hybrid Retrieval
+
+**HybridRetriever** combines both:
+- Default weights: 50% sparse, 50% dense
+- Fusion: Reciprocal Rank Fusion (RRF)
+- Deduplication: Removes redundant chunks
+
+### Reranking
+
+**Reranker** improves result quality:
+- Method: LLM-based relevance scoring
+- Model: Gemini 2.5 Flash
+- Fallback: Heuristic scoring
+
+## Programmatic Usage
 
 ```python
 from kb_pipeline.pipeline import KnowledgeBasePipeline
 
-# Initialize pipeline
+# Initialize
 pipeline = KnowledgeBasePipeline()
 
 # Build index
-pipeline.build_index("data/raw")
+indexed = pipeline.build_index("kb_pipeline/data/raw")
+print(f"Indexed {indexed} chunks")
 
 # Search
 results = pipeline.search(
@@ -136,66 +168,24 @@ results = pipeline.search(
     use_reranking=True
 )
 
-# Display results
+# Display
 print(pipeline.format_results(results))
 ```
 
-## Components
+## Orchestrator Integration
 
-### 1. DocumentIngester
-
-Reads documents from multiple formats:
-- PDF (using PyPDF2)
-- DOCX (using python-docx)
-- TXT, MD (plain text)
-
-### 2. DocumentPreprocessor
-
-Prepares documents for indexing:
-- Cleans text (removes extra whitespace, special chars)
-- Chunks into overlapping segments
-- Adds metadata (source, chunk_id, etc.)
-
-### 3. SparseIndexer (Elasticsearch)
-
-Traditional keyword search:
-- BM25 algorithm
-- Fast exact matching
-- Good for specific terms
-
-### 4. DenseIndexer (Pinecone)
-
-Semantic search:
-- OpenAI embeddings (text-embedding-3-small)
-- Cosine similarity
-- Captures meaning and context
-
-### 5. HybridRetriever
-
-Combines both methods:
-- Weighted fusion (default: 50% sparse, 50% dense)
-- Reciprocal rank fusion
-- Deduplication
-
-### 6. Reranker
-
-Second-stage ranking:
-- LLM-based relevance scoring
-- Improves precision
-- Optional heuristic fallback
-
-## Integration with Orchestrator
-
-Update `RetrieverAgent` to use the hybrid retriever:
+Update `app/orchestrator/agents/retriever_agent.py`:
 
 ```python
-# app/orchestrator/agents/retriever_agent.py
-
-from kb_pipeline.retrieval import HybridRetriever, Reranker
+from kb_pipeline.retrieval.hybrid_retriever import HybridRetriever
+from kb_pipeline.retrieval.reranker import Reranker
 
 class RetrieverAgent:
-    def __init__(self):
-        self.retriever = HybridRetriever()
+    def __init__(self, use_hybrid=True):
+        self.retriever = HybridRetriever(
+            sparse_weight=0.5,
+            dense_weight=0.5
+        )
         self.reranker = Reranker(use_llm=True)
 
     def __call__(self, state: AgentState) -> AgentState:
@@ -207,70 +197,120 @@ class RetrieverAgent:
         # Rerank
         results = self.reranker.rerank(query, results, top_k=3)
 
-        # Format context
-        context = self._format_context(results)
-
         state["retrieved_docs"] = results
-        state["context"] = context
+        state["context"] = self._format_context(results)
         return state
 ```
 
-## Performance Tips
+## Configuration Tuning
 
-### 1. Chunk Size
+### Chunk Size
 
-- **Smaller chunks** (256-512): Better precision, more chunks
-- **Larger chunks** (1024+): More context, fewer chunks
+Edit `kb_pipeline/pipeline.py`:
 
-### 2. Retrieval Weights
-
-Adjust based on your use case:
 ```python
-# More keyword-focused
-retriever = HybridRetriever(sparse_weight=0.7, dense_weight=0.3)
-
-# More semantic-focused
-retriever = HybridRetriever(sparse_weight=0.3, dense_weight=0.7)
+self.preprocessor = DocumentPreprocessor(
+    target_tokens=350,  # Increase for more context
+    max_tokens=450,     # Upper limit
+    overlap_tokens=50,  # Continuity
+    min_tokens=50       # Lower limit
+)
 ```
 
-### 3. Reranking
+### Retrieval Weights
 
-- **LLM reranking**: Higher quality, slower, more expensive
-- **Heuristic reranking**: Faster, cheaper, lower quality
+Adjust for your use case:
 
-## Monitoring
+```python
+# Keyword-focused (technical terms, names)
+retriever = HybridRetriever(sparse_weight=0.7, dense_weight=0.3)
 
-Check logs for pipeline status:
+# Semantic-focused (concepts, paraphrases)
+retriever = HybridRetriever(sparse_weight=0.3, dense_weight=0.7)
+
+# Balanced (default)
+retriever = HybridRetriever(sparse_weight=0.5, dense_weight=0.5)
+```
+
+## System Status Check
 
 ```bash
-tail -f logs/app_logs.log | grep "KB Pipeline"
+# Check Elasticsearch
+curl -u elastic:$ELASTIC_API_KEY $ELASTIC_URL
+
+# Check Pinecone
+python -c "from pinecone import Pinecone; pc = Pinecone(api_key='$PINECONE_API_KEY'); print(pc.list_indexes())"
+
+# Check Redis
+redis-cli -h $REDIS_HOST -p $REDIS_PORT -a $REDIS_PASSWORD PING
+
+# Check PostgreSQL
+psql $DATABASE_URL -c "SELECT 1"
+
+# View logs
+tail -f logs/app_logs.log
 ```
 
 ## Troubleshooting
 
-### Elasticsearch Connection Error
+### Connection Errors
 
+**Elasticsearch:**
 ```python
-# Check connection
 from kb_pipeline.indexing.index_sparse import SparseIndexer
-indexer = SparseIndexer()
+indexer = SparseIndexer()  # Check connection logs
 ```
 
-### Pinecone Index Not Found
-
+**Pinecone:**
 ```python
-# List indexes
-from pinecone import Pinecone
-pc = Pinecone(api_key="your-key")
-print(pc.list_indexes())
+from kb_pipeline.indexing.index_dense import DenseIndexer
+indexer = DenseIndexer()  # Check connection logs
 ```
 
 ### No Documents Found
 
 ```bash
-# Verify data directory
-ls -la data/raw/
+ls -la kb_pipeline/data/raw/
+# Ensure .md files are present
 ```
+
+### Embedding Model Download
+
+First run downloads all-mpnet-base-v2 (~400MB). Subsequent runs use cached model.
+
+### Circular Import Errors
+
+The pipeline components use standard `logging` instead of `app.utils.logger` to avoid circular dependencies.
+
+## Performance
+
+- **Indexing Speed**: ~2-3 chunks/second (local embeddings)
+- **Search Latency**:
+  - Sparse only: ~50ms
+  - Dense only: ~100ms
+  - Hybrid + rerank: ~500ms
+- **Memory Usage**: ~1GB (model loaded)
+
+## Current Implementation
+
+**Indexed:**
+- Documents: 1 (sample_policy_handbook.md)
+- Chunks: 27 semantic sections
+- Pinecone: 27 vectors (768D)
+- Elasticsearch: Ready (configure URL in .env)
+
+**Models:**
+- Embeddings: all-mpnet-base-v2 (FREE, unlimited)
+- LLM: Gemini 2.5 Flash
+- Memory: Redis + PostgreSQL
+
+## Next Steps
+
+1. Fix Elasticsearch URL in `.env` (line 43)
+2. Re-index documents: `python test_index_documents.py`
+3. Test hybrid search: `python -m kb_pipeline.pipeline --mode search --query "company values"`
+4. Start API server: `python -m app.main`
+5. Add more documents to `kb_pipeline/data/raw/`
 
 ## License
 
