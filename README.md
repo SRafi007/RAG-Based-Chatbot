@@ -10,7 +10,7 @@ This chatbot ingests company policy documents and uses advanced RAG techniques t
 
 - Hybrid RAG: BM25 keyword matching + semantic vector search
 - Semantic Chunking: Intelligent document splitting preserving context
-- Multi-Agent System: LangGraph orchestration with specialized agents
+- Multi-Agent System: orchestration with specialized agents
 - Conversation Memory: Redis (short-term) + PostgreSQL (long-term)
 - Domain Classification: Filters off-topic queries automatically
 - Source Citations: All responses include document references
@@ -20,8 +20,7 @@ This chatbot ingests company policy documents and uses advanced RAG techniques t
 
 - LLM: Google Gemini 2.5 Flash
 - Embeddings: sentence-transformers/all-mpnet-base-v2 (768D, FREE)
-- Vector DB: Pinecone (sparse BM25 + dense semantic)
-- Framework: FastAPI + LangGraph
+- Vector DB: Pinecone (sparse BM25 + dense semantic)- Framework: FastAPI
 - Memory: Redis (STM) + PostgreSQL (LTM)
 
 ### Architecture
@@ -178,7 +177,7 @@ curl -X POST http://localhost:8000/api/chat/ \
 RAG-based Chatbot/
 ├── app/
 │   ├── api/              # FastAPI endpoints
-│   ├── orchestrator/     # LangGraph + agents
+│   ├── orchestrator/     # agents
 │   ├── memory/           # Redis STM
 │   ├── models/           # PostgreSQL models
 │   └── utils/            # LLM, embeddings, logger

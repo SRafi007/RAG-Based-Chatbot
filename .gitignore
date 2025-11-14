@@ -1,7 +1,7 @@
 # Environment files
 .env
 rag_env/
-
+__pycache__/
 # Documentation and assignments
 docs/
 assignments_doc.pdf

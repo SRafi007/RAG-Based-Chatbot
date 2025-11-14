@@ -765,3 +765,14 @@ TypeError: object of type 'NoneType' has no len()
 2025-11-14 06:25:58 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | Hybrid retrieval returned 3 documents
 2025-11-14 06:25:58 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
 2025-11-14 06:26:01 | INFO | RAG-based Chatbot.app.orchestrator.agents.summarizer_agent | SummarizerAgent: Generated policy-related response
+2025-11-14 06:43:19 | INFO | RAG-based Chatbot.app.api.chat_api | Streaming chat request from user 001, session 001
+2025-11-14 06:43:19 | INFO | RAG-based Chatbot.app.orchestrator.orchestrator | Streaming process for user 001, session 001
+2025-11-14 06:43:20 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classifying message: tell me about discrimination polity...
+2025-11-14 06:43:21 | INFO | RAG-based Chatbot.app.orchestrator.agents.domain_guard | DomainGuard: Classified as POLICY-RELATED
+2025-11-14 06:43:21 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieving documents for query: tell me about discrimination polity...
+2025-11-14 06:43:26 | INFO | RAG-based Chatbot.kb_pipeline.indexing.index_dense | Local dense search returned 12 results for: tell me about discrimination polity
+2025-11-14 06:43:26 | INFO | RAG-based Chatbot.kb_pipeline.retrieval.hybrid_retriever | Fused 0 sparse + 12 dense into 12 unique results
+2025-11-14 06:43:54 | INFO | RAG-based Chatbot.kb_pipeline.retrieval.reranker | LLM reranking complete for 6 documents
+2025-11-14 06:43:54 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | Hybrid retrieval returned 3 documents
+2025-11-14 06:43:54 | INFO | RAG-based Chatbot.app.orchestrator.agents.retriever_agent | RetrieverAgent: Retrieved 3 documents
+2025-11-14 07:09:27 | INFO | RAG-based Chatbot.app.main | 🛑 Application shutdown complete.
