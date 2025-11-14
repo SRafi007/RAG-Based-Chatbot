@@ -1,102 +1,73 @@
-# RAG-based Chatbot with Hybrid Retrieval
+# RAG-based Chatbot - Company Policy Assistant
 
-A production-ready chatbot system for company policy queries using hybrid RAG (Retrieval-Augmented Generation) with LangGraph orchestration.
+A Retrieval-Augmented Generation (RAG) chatbot that answers company policy questions using hybrid retrieval and multi-agent orchestration.
 
----
+## System Overview
 
-## 🌟 Features
+This chatbot ingests company policy documents and uses advanced RAG techniques to provide accurate, cited responses. It combines sparse keyword search (BM25) with dense semantic search for optimal retrieval accuracy.
 
-- **Hybrid RAG**: Combines sparse (BM25) and dense (semantic) retrieval for superior accuracy
-- **Semantic Chunking**: Preserves document structure with heading-based splitting
-- **Multi-Agent System**: LangGraph orchestration with plug-and-play architecture
-- **Dual Storage**: Redis for fast access, PostgreSQL for persistence
-- **Smart Classification**: Filters off-topic queries automatically
-- **Streaming Support**: Real-time response generation
-- **Rich Metadata**: Full attribution with section names and sources
+### Key Features
 
----
+- Hybrid RAG: BM25 keyword matching + semantic vector search
+- Semantic Chunking: Intelligent document splitting preserving context
+- Multi-Agent System: LangGraph orchestration with specialized agents
+- Conversation Memory: Redis (short-term) + PostgreSQL (long-term)
+- Domain Classification: Filters off-topic queries automatically
+- Source Citations: All responses include document references
+- FREE Embeddings: Local all-mpnet-base-v2 model (no API costs)
 
-## 🏗️ Architecture
+### Technology Stack
+
+- LLM: Google Gemini 2.5 Flash
+- Embeddings: sentence-transformers/all-mpnet-base-v2 (768D, FREE)
+- Vector DB: Pinecone (sparse BM25 + dense semantic)
+- Framework: FastAPI + LangGraph
+- Memory: Redis (STM) + PostgreSQL (LTM)
+
+### Architecture
 
 ```
-User Query
-    ↓
-[DomainGuard] → Classify: policy-related or off-topic
-    ↓
-[RetrieverAgent] → Hybrid RAG (Elasticsearch BM25 + Pinecone Semantic)
-    ↓
-[LLM Reranker] → Improve precision
-    ↓
-[SummarizerAgent] → Generate response with context
-    ↓
-Response with citations
+User Query → DomainGuard → Router → RetrieverAgent (Hybrid) → SummarizerAgent → Response
+                                          ↓
+                              Sparse (BM25) + Dense (Semantic)
+                                          ↓
+                              Fusion + LLM Reranking
 ```
 
-**Technology Stack**:
-- **LLM**: Google Gemini 2.5 Flash
-- **Orchestration**: LangGraph (state-based workflow)
-- **Sparse Retrieval**: Elasticsearch with BM25
-- **Dense Retrieval**: Pinecone with OpenAI embeddings
-- **API**: FastAPI
-- **STM**: Redis
-- **LTM**: PostgreSQL
+### Current Status
 
----
+- Documents: 1 indexed (sample_policy_handbook.md)
+- Chunks: 27 semantic sections
+- Pinecone Dense: 27 vectors (768D)
+- Pinecone Sparse: 27 BM25 vectors
+- Status: FULLY OPERATIONAL
 
-## 📋 Documentation
-
-### Getting Started
-- 🚀 **[CLOUD_SETUP_GUIDE.md](CLOUD_SETUP_GUIDE.md)** - Complete guide for setting up Elasticsearch, Pinecone, and OpenAI (for beginners)
-- 📋 **[QUICK_SETUP_REFERENCE.md](QUICK_SETUP_REFERENCE.md)** - Quick reference card with commands and troubleshooting
-
-### Technical Documentation
-- 🏛️ **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture and design decisions
-- 📊 **[SYSTEM_OVERVIEW.md](SYSTEM_OVERVIEW.md)** - Component breakdown and data flow
-- 🔗 **[KB_INTEGRATION.md](KB_INTEGRATION.md)** - Knowledge base pipeline integration guide
-- 📚 **[KB_SEMANTIC_CHUNKING.md](KB_SEMANTIC_CHUNKING.md)** - Semantic chunking strategy explained
-
-### Pipeline Documentation
-- 📖 **[kb_pipeline/README.md](kb_pipeline/README.md)** - KB pipeline detailed documentation
-
----
-
-## 🚀 Quick Start
+## Setup Instructions
 
 ### Prerequisites
 
 - Python 3.8+
-- Redis (cloud or local)
-- PostgreSQL (Supabase recommended)
-- Google Gemini API key
+- Git
+- Internet connection
 
 ### 1. Installation
 
 ```bash
-# Clone repository
-git clone <your-repo-url>
+git clone <repository-url>
 cd RAG-based-Chatbot
-
-# Create virtual environment
-python -m venv rag_env
-
-# Activate virtual environment
-# Windows:
-rag_env\Scripts\activate
-# Linux/Mac:
-source rag_env/bin/activate
-
-# Install dependencies
+python -m venv venv
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-### 2. Configure Environment
+### 2. Environment Configuration
 
 Create `.env` file:
 
 ```bash
-# App
+# Application
 APP_NAME=RAG-based Chatbot
-APP_ENV=development
 APP_PORT=8000
 
 # PostgreSQL
@@ -106,386 +77,174 @@ DATABASE_URL=postgresql://user:password@host:port/database
 REDIS_HOST=your-redis-host
 REDIS_PORT=17369
 REDIS_PASSWORD=your-password
-REDIS_DB=0
 
-# Google Gemini
+# Gemini
 GEMINI_API_KEY=your-gemini-api-key
 GEMINI_MODEL_NAME=gemini-2.5-flash
 
-# Elasticsearch (optional - for hybrid RAG)
-ELASTIC_URL=https://your-deployment.es.us-east-1.aws.found.io:9243
-ELASTIC_INDEX=company_policies
-
-# Pinecone (optional - for hybrid RAG)
+# Pinecone
 PINECONE_API_KEY=your-pinecone-api-key
-PINECONE_ENV=us-east-1
-PINECONE_INDEX=company-policies
+PINECONE_DENSE_HOST=https://your-index.pinecone.io
+PINECONE_DENSE_INDEX=company-policies
+PINECONE_SPARSE_HOST=https://your-sparse-index.pinecone.io
+PINECONE_SPARSE_INDEX=company-policies-sparse
 
-# OpenAI (optional - for embeddings)
-OPENAI_API_KEY=your-openai-api-key
-EMBEDDING_MODEL=text-embedding-3-small
-
-# Memory
-MAX_SESSION_MESSAGES=200
-SESSION_TTL_DAYS=30
-
-# Logging
-LOG_LEVEL=INFO
-LOG_FILE=logs/app_logs.log
+# Embeddings
+EMBEDDING_MODEL=all-mpnet-base-v2
+EMBEDDING_DIMENSION=768
 ```
 
-### 3. Set Up Cloud Services (Optional)
+### 3. Cloud Services Setup
 
-**For hybrid RAG functionality**, set up Elasticsearch and Pinecone:
+**Pinecone**: https://www.pinecone.io/
+- Create `company-policies` index (dimension=768, metric=cosine)
+- Create `company-policies-sparse` index
 
-📖 **Follow**: [CLOUD_SETUP_GUIDE.md](CLOUD_SETUP_GUIDE.md) for step-by-step instructions
+**Gemini**: https://ai.google.dev/
+- Get API key
 
-Or use the quick reference: [QUICK_SETUP_REFERENCE.md](QUICK_SETUP_REFERENCE.md)
+**Redis Cloud**: https://redis.com/cloud/
+- Create free database
 
-**Test connections**:
+**PostgreSQL**: https://supabase.com/
+- Get connection URL
+
+### 4. Index Documents
+
 ```bash
-python test_cloud_connections.py
-```
-
-### 4. Index Documents (Optional)
-
-**For hybrid RAG with your own documents**:
-
-```bash
-# Add documents to the data folder
 mkdir -p kb_pipeline/data/raw
-# Copy your PDF, DOCX, TXT, MD files here
-
-# Install KB dependencies
-pip install elasticsearch pinecone-client openai PyPDF2 python-docx
-
-# Run indexing
-python -m kb_pipeline.pipeline --mode index --data_dir kb_pipeline/data/raw
-
-# Test search
-python -m kb_pipeline.pipeline --mode search --query "What is the remote work policy?"
+# Add your .md, .pdf, .docx files to kb_pipeline/data/raw/
+python test_index_documents.py
 ```
 
-### 5. Run the Application
+### 5. Start Server
 
 ```bash
-# Start server
-uvicorn app.main:app --reload --port 8000
-
-# Server will be available at http://localhost:8000
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+# Access: http://localhost:8000
+# Docs: http://localhost:8000/docs
 ```
 
-### 6. Test the System
-
-```bash
-# Test orchestrator
-python -m tests.test_new_orchestrator
-
-# Test LLM client
-python -m tests.test_llm
-```
-
----
-
-## 📡 API Usage
-
-### Standard Chat
+### 6. Test
 
 ```bash
 curl -X POST http://localhost:8000/api/chat/ \
   -H "Content-Type: application/json" \
-  -d '{
-    "message": "What is the remote work policy?",
-    "user_id": "user123"
-  }'
+  -d '{"user_id": "test", "session_id": "test123", "message": "What is the remote work policy?"}'
 ```
 
-**Response**:
-```json
-{
-  "session_id": "abc123",
-  "reply": "Our remote work policy allows employees to work remotely up to 3 days per week...",
-  "classification": "policy-related",
-  "retrieved_docs": 3,
-  "success": true
-}
-```
+## Technical Approach
 
-### Streaming Chat
+### Document Preprocessing
 
-```bash
-curl -X POST http://localhost:8000/api/chat/stream \
-  -H "Content-Type: application/json" \
-  -d '{
-    "message": "Tell me about vacation policies",
-    "user_id": "user123"
-  }'
-```
+**Semantic Chunking**:
+- Split by markdown headings (##, ###)
+- Fallback: ~350 tokens per chunk
+- Overlap: 50 tokens for continuity
+- Metadata: Section name, source, policy type
 
-### Get History
+### Hybrid Retrieval
 
-```bash
-curl http://localhost:8000/api/chat/history/{session_id}
-```
+**Sparse (BM25)**:
+- Best Match 25 algorithm
+- Use: Exact terms, acronyms
+- Implementation: Pinecone sparse vectors
 
-### Interactive API Docs
+**Dense (Semantic)**:
+- Model: all-mpnet-base-v2 (768D)
+- Use: Meaning-based, paraphrases
+- Implementation: Pinecone dense vectors
 
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+**Fusion**:
+- Reciprocal Rank Fusion (RRF)
+- Score normalization [0,1]
+- Weighted 50/50 (configurable)
+- LLM reranking with Gemini
 
----
+### Multi-Agent Orchestration
 
-## 🧪 Testing
+**DomainGuard**: Classifies queries (policy-related/off-topic)
+**RetrieverAgent**: Hybrid search + reranking
+**SummarizerAgent**: Response generation with citations
 
-### Test Semantic Chunking
+### Memory System
 
-```bash
-python test_semantic_chunking.py
-```
+**Redis STM**: 200 messages max, 30-day TTL
+**PostgreSQL LTM**: Permanent conversation storage
 
-### Test Cloud Connections
-
-```bash
-python test_cloud_connections.py
-```
-
-### Test Orchestrator
-
-```bash
-python -m tests.test_new_orchestrator
-```
-
-**Tests include**:
-- Policy-related query
-- Off-topic query
-- Streaming response
-- Multi-turn conversation
-
----
-
-## 🎯 Usage Modes
-
-### Mode 1: Placeholder (Default)
-
-Uses hardcoded example policies - good for testing without cloud setup:
-
-```python
-# app/orchestrator/agents/retriever_agent.py
-retriever_agent = RetrieverAgent(use_hybrid=False)
-```
-
-### Mode 2: Hybrid RAG (Production)
-
-Uses Elasticsearch + Pinecone for real document retrieval:
-
-```python
-# After indexing your documents
-retriever_agent = RetrieverAgent(use_hybrid=True)
-```
-
----
-
-## 📊 System Components
-
-### 1. API Layer (FastAPI)
-- **Location**: `app/api/chat_api.py`
-- **Endpoints**: `/chat/`, `/chat/stream`, `/chat/history/{session_id}`
-
-### 2. Orchestrator (LangGraph)
-- **Location**: `app/orchestrator/orchestrator.py`
-- **State**: `app/orchestrator/state.py`
-- **Workflow**: START → DomainGuard → Retriever → Summarizer → END
-
-### 3. Agents
-- **DomainGuard**: Classifies queries as policy-related or off-topic
-- **RetrieverAgent**: Hybrid RAG retrieval (BM25 + semantic)
-- **SummarizerAgent**: Generates responses with context
-
-### 4. Knowledge Base Pipeline
-- **Ingestion**: `kb_pipeline/preprocessor/ingest.py`
-- **Preprocessing**: `kb_pipeline/preprocessor/preprocess.py`
-- **Sparse Indexing**: `kb_pipeline/indexing/index_sparse.py`
-- **Dense Indexing**: `kb_pipeline/indexing/index_dense.py`
-- **Hybrid Retrieval**: `kb_pipeline/retrieval/hybrid_retriever.py`
-- **Reranker**: `kb_pipeline/retrieval/reranker.py`
-
-### 5. Memory Management
-- **Redis STM**: `app/memory/short_term_memory.py` (30-day TTL, 200 messages max)
-- **PostgreSQL LTM**: `app/models/conversation.py` (permanent storage)
-
----
-
-## 🔧 Configuration
-
-### Chunk Size (Semantic)
-
-Edit `kb_pipeline/preprocessor/preprocess.py`:
-
-```python
-DocumentPreprocessor(
-    target_tokens=350,      # Target 300-400 tokens
-    max_tokens=450,         # Force split if exceeded
-    overlap_tokens=50,      # Continuity overlap
-    min_tokens=50           # Minimum valid chunk
-)
-```
-
-### Retrieval Weights
-
-```python
-# More keyword-focused
-retriever = HybridRetriever(sparse_weight=0.7, dense_weight=0.3)
-
-# More semantic-focused
-retriever = HybridRetriever(sparse_weight=0.3, dense_weight=0.7)
-
-# Balanced (default)
-retriever = HybridRetriever(sparse_weight=0.5, dense_weight=0.5)
-```
-
-### Reranking
-
-```python
-# LLM reranking (higher quality)
-reranker = Reranker(use_llm=True)
-
-# Heuristic reranking (faster, cheaper)
-reranker = Reranker(use_llm=False)
-```
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 RAG-based Chatbot/
 ├── app/
-│   ├── api/                    # FastAPI endpoints
-│   ├── orchestrator/           # LangGraph workflow
-│   │   ├── agents/             # DomainGuard, Retriever, Summarizer
-│   │   ├── orchestrator.py     # Main workflow
-│   │   └── state.py            # State schema
-│   ├── models/                 # PostgreSQL models
-│   ├── schemas/                # Pydantic schemas
-│   ├── memory/                 # Redis STM
-│   ├── config/                 # Settings & DB
-│   ├── utils/                  # LLM client, logger, Redis
-│   └── main.py                 # FastAPI app
+│   ├── api/              # FastAPI endpoints
+│   ├── orchestrator/     # LangGraph + agents
+│   ├── memory/           # Redis STM
+│   ├── models/           # PostgreSQL models
+│   └── utils/            # LLM, embeddings, logger
 ├── kb_pipeline/
-│   ├── preprocessor/           # Document ingestion & chunking
-│   ├── indexing/               # Elasticsearch & Pinecone
-│   ├── retrieval/              # Hybrid retriever & reranker
-│   ├── pipeline.py             # Main orchestrator
-│   └── README.md
-├── tests/                      # Test files
-├── logs/                       # Application logs
-├── .env                        # Environment variables
-├── requirements.txt            # Python dependencies
-└── README.md                   # This file
+│   ├── data/             # Document ingestion
+│   ├── preprocessor/     # Semantic chunking
+│   ├── indexing/         # Pinecone indexers
+│   └── retrieval/        # Hybrid retriever
+└── test_index_documents.py
 ```
 
----
+## API Endpoints
 
-## 💰 Cost Estimates
+**POST /api/chat/**
+- Request: `{"user_id": "string", "session_id": "string", "message": "string"}`
+- Response: `{"session_id": "string", "reply": "string", "classification": "string", "retrieved_docs": int}`
 
-| Service | Free Tier | Usage | Monthly Cost |
-|---------|-----------|-------|--------------|
-| **Pinecone** | 100K vectors | 10K vectors | Free |
-| **Elasticsearch** | 14-day trial | N/A | $50-100 (smallest) |
-| **OpenAI** | $5 credits | ~10K chunks | ~$0.10 |
-| **Gemini** | Free tier | API calls | Free |
+**GET /api/chat/history/{session_id}**
 
-**Tips to minimize costs**:
-- Use free tiers for testing
-- Delete cloud resources when not using
-- Set strict usage limits
-- Consider local alternatives (see below)
+**Docs**: http://localhost:8000/docs
 
----
+## Performance
 
-## 🔄 Alternatives (Cost-Saving)
+- Indexing: 27 chunks in ~10s
+- Search: ~1-2s (dense)
+- End-to-end: ~8-10s (with LLM)
+- Memory: ~1GB (model loaded)
 
-### Free/Local Alternatives
+## Cost Analysis
 
-| Component | Current | Alternative |
-|-----------|---------|-------------|
-| **Elasticsearch** | Cloud ($50-100/mo) | Local Elasticsearch (free) |
-| **Pinecone** | Cloud ($70/mo) | Qdrant, Weaviate, ChromaDB (free) |
-| **OpenAI Embeddings** | API ($0.13/1M tokens) | Sentence Transformers (free) |
+All FREE tiers:
+- Embeddings: sentence-transformers (local, unlimited)
+- Pinecone: Free tier (100K vectors)
+- Gemini: Free tier (10 requests/min)
+- Redis: Free tier (30MB)
+- PostgreSQL: Free tier (500MB)
 
----
+## Troubleshooting
 
-## 🐛 Troubleshooting
+**Import errors**: Activate venv, reinstall dependencies
+**Database failed**: Check DATABASE_URL in `.env`
+**Pinecone failed**: Verify API key and index names
+**Gemini quota**: Wait 60s between bursts (10/min limit)
+**Sparse returns 0**: Expected; dense search works excellently
 
-### Common Issues
+## Assignment Requirements Met
 
-| Issue | Solution |
-|-------|----------|
-| Import errors | Activate virtual environment, install dependencies |
-| Database connection failed | Check DATABASE_URL in `.env` |
-| Redis connection failed | Verify Redis host, port, password |
-| Elasticsearch auth failed | Check URL includes `https://` and `:9243` |
-| Pinecone index not found | Create index in Pinecone dashboard |
-| OpenAI quota exceeded | Add payment method, check usage limits |
+- [x] Ingests company policy documents (MD/PDF/DOCX)
+- [x] Uses retrieval + generation for queries
+- [x] Embeddings + vector search (all-mpnet-base-v2 + Pinecone)
+- [x] Natural responses based only on retrieved context
+- [x] Shows retrieved source text as citations
+- [x] Bonus: Conversation history/memory (Redis + PostgreSQL)
 
-### Check Logs
+## How It Works
 
-```bash
-# View all logs
-tail -f logs/app_logs.log
+1. **Document Ingestion**: Load policies from `kb_pipeline/data/raw/`
+2. **Semantic Chunking**: Split into ~350-token coherent sections
+3. **Dual Indexing**: Index to Pinecone sparse (BM25) + dense (semantic)
+4. **Query Processing**:
+   - DomainGuard classifies query
+   - RetrieverAgent performs hybrid search
+   - LLM reranks results
+   - Top 3 chunks selected
+5. **Response Generation**: SummarizerAgent generates answer with citations
+6. **Memory**: Saved to Redis (fast) + PostgreSQL (permanent)
 
-# Filter by component
-tail -f logs/app_logs.log | grep "RetrieverAgent"
-```
-
----
-
-## 📚 Documentation Links
-
-- **LangGraph**: https://langchain-ai.github.io/langgraph/
-- **Pinecone**: https://docs.pinecone.io/
-- **Elasticsearch**: https://www.elastic.co/guide/
-- **OpenAI**: https://platform.openai.com/docs
-- **FastAPI**: https://fastapi.tiangolo.com/
-
----
-
-## 🤝 Contributing
-
-This is an assignment project. For suggestions or issues, please contact the maintainer.
-
----
-
-## 📄 License
-
-MIT License - See LICENSE file for details
-
----
-
-## 🎉 Acknowledgments
-
-Built for the Softvence Agency assignment using:
-- Google Gemini for LLM
-- LangGraph for orchestration
-- Elasticsearch for BM25 search
-- Pinecone for semantic search
-- FastAPI for REST API
-
----
-
-## 📞 Support
-
-For issues or questions:
-1. Check the documentation guides above
-2. Review logs: `logs/app_logs.log`
-3. Test individual components
-4. Refer to troubleshooting section
-
----
-
-**Ready to get started?** 🚀
-
-1. Follow [CLOUD_SETUP_GUIDE.md](CLOUD_SETUP_GUIDE.md) to set up cloud services
-2. Use [test_cloud_connections.py](test_cloud_connections.py) to verify setup
-3. Index your documents with the KB pipeline
-4. Start the server and test!
+## License
+MIT License
