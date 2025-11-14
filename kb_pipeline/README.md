@@ -50,10 +50,6 @@ pip install -r requirements.txt
 Update `.env`:
 
 ```bash
-# Elasticsearch
-ELASTIC_URL=https://your-cluster.es.io:443
-ELASTIC_API_KEY=your-api-key
-ELASTIC_INDEX=company_policies
 
 # Pinecone
 PINECONE_API_KEY=your-api-key
