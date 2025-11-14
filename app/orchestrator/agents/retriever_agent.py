@@ -173,6 +173,5 @@ class RetrieverAgent:
         logger.info("Hybrid mode disabled, using placeholder retrieval")
 
 
-# Singleton instance - starts with use_hybrid=False (placeholder mode)
-# Will be enabled after KB pipeline is indexed
-retriever_agent = RetrieverAgent(use_hybrid=False)
+# Singleton instance - hybrid mode enabled (Pinecone sparse + dense indexed)
+retriever_agent = RetrieverAgent(use_hybrid=True)

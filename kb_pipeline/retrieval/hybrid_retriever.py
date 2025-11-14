@@ -88,7 +88,8 @@ class HybridRetriever:
                 **result,
                 "sparse_score": sparse_scores[i] * self.sparse_weight,
                 "dense_score": 0.0,
-                "final_score": sparse_scores[i] * self.sparse_weight
+                "final_score": sparse_scores[i] * self.sparse_weight,
+                "retrieval_method": "sparse"
             }
 
         # Process dense results
@@ -106,7 +107,8 @@ class HybridRetriever:
                     **result,
                     "sparse_score": 0.0,
                     "dense_score": dense_scores[i] * self.dense_weight,
-                    "final_score": dense_scores[i] * self.dense_weight
+                    "final_score": dense_scores[i] * self.dense_weight,
+                    "retrieval_method": "dense"
                 }
 
         # Sort by final score
