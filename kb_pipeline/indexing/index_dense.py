@@ -33,16 +33,16 @@ class DenseIndexer:
 
             # Initialize Pinecone
             self.pc = Pinecone(api_key=settings.pinecone_api_key)
-            self.index_name = settings.pinecone_index
+            self.index_name = settings.pinecone_dense_index
 
             # Connect to existing index using host
-            logger.info(f"Connecting to Pinecone index: {self.index_name}")
-            logger.info(f"Pinecone host: {settings.pinecone_host}")
+            logger.info(f"Connecting to Pinecone dense index: {self.index_name}")
+            logger.info(f"Pinecone host: {settings.pinecone_dense_host}")
 
             # Get index using host
             self.index = self.pc.Index(
                 name=self.index_name,
-                host=settings.pinecone_host
+                host=settings.pinecone_dense_host
             )
 
             logger.info(f"✅ Connected to Pinecone index: {self.index_name}")

@@ -35,15 +35,16 @@ class Settings(BaseSettings):
     max_session_messages: int = 200
     session_ttl_days: int = 30
 
-    # Elasticsearch (Sparse Vector)
-    elastic_url: str = Field(default="https://localhost:9200")
-    elastic_api_key: str = Field(default="")
-    elastic_index: str = Field(default="company_policies")
-
-    # Pinecone (Dense Vector)
+    # Pinecone Configuration
     pinecone_api_key: str
-    pinecone_host: str
-    pinecone_index: str = Field(default="company-policies")
+
+    # Pinecone Dense (Semantic Vector)
+    pinecone_dense_host: str
+    pinecone_dense_index: str = Field(default="company-policies")
+
+    # Pinecone Sparse (BM25 Keyword)
+    pinecone_sparse_host: str
+    pinecone_sparse_index: str = Field(default="company-policies-sparse")
 
     # Local Embeddings (sentence-transformers - FREE & UNLIMITED!)
     embedding_model: str = Field(default="all-mpnet-base-v2")
